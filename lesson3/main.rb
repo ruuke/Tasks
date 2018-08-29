@@ -3,14 +3,11 @@ require_relative 'route'
 require_relative 'station'
 require_relative 'railroad'
 require_relative 'wagons'
-require_relative 'CargoTrain'
-require_relative 'PassengerTrain'
-require_relative 'CargoWagon'
-require_relative 'PassengerWagon'
+require_relative 'cargo_train'
+require_relative 'passenger_train'
+require_relative 'cargo_wagon'
+require_relative 'passenger_wagon'
 
 puts "Давай создадим железную дорогу."
 @rr = RailRoad.new
-
-@rr.seed
-
-
+@rr.main_menu

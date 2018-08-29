@@ -6,10 +6,10 @@ class Route
   end
 
   def add_station(station)
-    @route_stations.insert(-2, station) unless self.route_stations.include?(station)
+    route_stations.insert(-2, station) unless self.route_stations.include?(station)
   end
 
   def remove_station(station)
-    @route_stations.delete(station) unless [@route_stations.first, @route_stations.last].include?(station)
+    route_stations.delete(station) unless [@route_stations.first, @route_stations.last].include?(station)
   end
 end

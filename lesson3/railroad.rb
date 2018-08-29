@@ -26,6 +26,38 @@ class RailRoad
     @tr2 = PassengerTrain.new(222)
     @trains_in_railroad << @tr1
     @trains_in_railroad << @tr2
+    @wagons << CargoWagon.new
+    @wagons << PassengerWagon.new
+    @wagons << CargoWagon.new
+    @wagons << PassengerWagon.new
+  end
+
+  # Main menu
+
+  def main_menu
+    loop do
+      puts "Выберите пункт меню"
+      puts "1. Меню станций."
+      puts "2. Меню поездов."
+      puts "3. Меню маршрутов."
+      puts "4. Меню вагонов."
+      puts "0. Выйти из программы."
+      select_input = gets.chomp
+      break if select_input == "0"
+      case select_input
+      when "1"
+        stations_menu
+      when "2"
+        trains_menu
+      when "3"
+        routes_menu
+      when "4"
+        wagons_menu
+      else
+        puts "Выберите значение из списка"
+        main_menu
+      end
+    end
   end
 
   # Stations menu
@@ -34,8 +66,8 @@ class RailRoad
     loop do
       puts "Выберите пункт меню"
       puts "1. Создать станцию"
-      puts "2. Выбрать станцию."
-      puts "3. Вывести список станций."
+      puts "2. Вывести список станций."
+      puts "3. Вывести список поездов на станции."
       puts "0. Выйти из меню."
       select_input = gets.chomp
       break if select_input == "0"
@@ -43,14 +75,13 @@ class RailRoad
       when "1"
         new_station
       when "2"
-        select_station
-      when "3"
         show_stations
+      when "3"
+        show_trains_in_stations
       else
         puts "Выберите значение из списка"
         stations_menu
       end
-
     end
   end
 
@@ -60,7 +91,7 @@ class RailRoad
     @stations.each do |station| 
       if station.name == station_name
         puts "Данная станция уже существует." 
-        new_station
+        return new_station
       end
     end
       @stations << Station.new(station_name)
@@ -89,7 +120,7 @@ class RailRoad
       @stations[selected_station - 1].trains
   end
 
-  def show_train_in_station
+  def show_trains_in_stations
     index = 1
     @stations.each do |station|
       puts "#{index}. #{station.name} - #{station.trains}"
@@ -98,6 +129,44 @@ class RailRoad
   end
 
   # Trains menu
+
+  def trains_menu
+    loop do
+      puts "Выберите пункт меню"
+      puts "1. Создать поезд"
+      puts "2. Показать список поездов."
+      puts "3. Добавить маршрут поезду."
+      puts "4. Прицепить вагон поезды."
+      puts "5. Отцепить вагон от поезда."
+      puts "6. Отправить поезд на следующую станцию."
+      puts "7. Отправить поезд на предыдущую станцию."
+      puts "8. Показать прицепленные к поезду вагоны."
+      puts "0. Выйти из меню."
+      select_input = gets.chomp
+      break if select_input == "0"
+      case select_input
+      when "1"
+        new_train
+      when "2"
+        show_trains
+      when "3"
+        add_train_to_route
+      when "4"
+        add_wagon_to_train
+      when "5"
+        remove_wagon_from_train
+      when "6"
+        train_drive_forward
+      when "7"
+        train_drive_back
+      when "8"
+        show_train_wagons
+      else
+        puts "Выберите значение из списка"
+        trains_menu
+      end
+    end
+  end
 
   def new_train
     puts "Выберите тип поезда:"
@@ -122,7 +191,7 @@ class RailRoad
     @trains_in_railroad.each do |train|
       if train.number == train_number
         puts "Данный поезд уже существует"
-        new_passenger_train
+        return new_passenger_train
       end
     end
     @trains_in_railroad << PassengerTrain.new(train_number)
@@ -135,7 +204,7 @@ class RailRoad
     @trains_in_railroad.each do |train|
       if train.number == train_number
         puts "Данный поезд уже существует"
-        new_cargo_train
+        return new_cargo_train
       end
     end
     @trains_in_railroad << CargoTrain.new(train_number)
@@ -198,15 +267,31 @@ class RailRoad
 
   def remove_wagon_from_train
     show_train_wagons
-    deleted_wagon = gets.chomp.to_i
-    @selected_train.train_wagons.remove_wagon
+    deleted_wagon = select_wagon
+    @selected_train.remove_wagon(deleted_wagon)
   end
 
-
-
-
-
   # Wagons menu
+
+  def wagons_menu
+    loop do
+      puts "Выберите пункт меню"
+      puts "1. Создать вагон"
+      puts "2. Показать список вагонов."
+      puts "0. Выйти из меню."
+      select_input = gets.chomp
+      break if select_input == "0"
+      case select_input
+      when "1"
+        new_wagon
+      when "2"
+        show_wagons      
+      else
+        puts "Выберите значение из списка"
+        wagons_menu
+      end
+    end
+  end
 
   def new_wagon
     puts "Выберите тип вагона:"
@@ -241,20 +326,44 @@ class RailRoad
     @wagons[selected_wagon - 1]
   end
 
-
-
-
-
-
   # Routes menu
+
+  def routes_menu
+    loop do
+      puts "Выберите пункт меню"
+      puts "1. Создать маршрут"
+      puts "2. Показать список маршрутов."
+      puts "3. Добавить станцию в маршрут."
+      puts "4. Удалить станцию из маршрута."
+      puts "5. Показать станции в маршруте."
+      puts "0. Выйти из меню."
+      select_input = gets.chomp
+      break if select_input == "0"
+      case select_input
+      when "1"
+        new_route
+      when "2"
+        show_routes
+      when "3"
+        add_station_to_route
+      when "4"
+        delete_station_from_route
+      when "5"
+        show_stations_in_route
+      else
+        puts "Выберите значение из списка"
+        return routes_menu
+      end
+    end
+  end
 
   def new_route
     if @stations.length >= 2
-      puts "first"
+      puts "Выберите первыю станцию маршрута."
       show_stations
       selected_first_station = gets.chomp.to_i
       first_station = @stations[selected_first_station - 1]
-      puts "second"
+      puts "Выберите последнюю станцию маршрута."
       show_stations
       selected_second_station = gets.chomp.to_i
       if selected_second_station == selected_first_station
@@ -296,7 +405,6 @@ class RailRoad
   def add_station_to_route
     selected_station = select_station
     select_route.add_station(selected_station)
-
   end
 
   def delete_station_from_route
@@ -304,17 +412,4 @@ class RailRoad
     selected_station = select_station
     select_route.remove_station(selected_station)
   end
-
-  
-
-    
-
-
-
-
-
-
-
-
-
 end

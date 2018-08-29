@@ -4,7 +4,7 @@ class Train
   attr_reader :type, :route, :train_wagons, :trains, :number
     
   def initialize(number, type)
-    
+    @number = number
     @type = type
     @speed = 0
     @train_wagons = []
@@ -25,7 +25,7 @@ class Train
   end
 
   def remove_wagon(wagon) 
-    @train_wagons.delete(wagon) if @speed == 0 && train_wagons.include?(wagon)
+    train_wagons.delete(wagon) if @speed == 0 && train_wagons.include?(wagon)
   end
 
   def drive_forward
@@ -41,15 +41,15 @@ class Train
   end
 
   def current_station
-    @route.route_stations[@current_station_index]
+    route.route_stations[@current_station_index]
   end
 
 
   def next_station
-    @route.route_stations[@current_station_index + 1] if @route.route_stations[@current_station_index + 1] != nil
+    route.route_stations[@current_station_index + 1] if @route.route_stations[@current_station_index + 1] != nil
   end
 
   def previous_station
-    @route.route_stations[@current_station_index - 1] if @current_station_index > 0
+    route.route_stations[@current_station_index - 1] if @current_station_index > 0
   end
 end
