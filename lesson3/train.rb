@@ -29,19 +29,19 @@ class Train
   end
 
   def drive_forward
-    route.route_stations[@current_station_index].send_train(self) if self.next_station
+    @route.route_stations[@current_station_index].send_train(self) if self.next_station
     next_station.take_train(self)
     @current_station_index += 1
   end
 
   def drive_back
-    route.route_stations[@current_station_index].send_train(self) if self.previous_station
+    @route.route_stations[@current_station_index].send_train(self) if self.previous_station
     previous_station.take_train(self)
     @current_station_index -= 1
   end
 
   def current_station
-    route.route_stations[@current_station_index]
+    @route.route_stations[@current_station_index]
   end
 
 

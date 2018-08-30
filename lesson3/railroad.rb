@@ -117,7 +117,7 @@ class RailRoad
     if selected_station < 1 || selected_station > @stations.length
       return select_station
     end
-      @stations[selected_station - 1].trains
+      @stations[selected_station - 1]
   end
 
   def show_trains_in_stations
