@@ -18,26 +18,51 @@ class Train
     @route = route #принимает объект класса Route (маршрут)
     route.route_stations.first.take_train(self) #помещает поезд на первую станцию маршрута
     @current_station_index = 0
+    puts "Поезд помещен на станцию #{current_station.name}"
   end
 
   def add_wagon(wagon)
-    @train_wagons << wagon if @speed == 0 && wagon.type == type unless train_wagons.include?(wagon)
+    if wagon == nil
+      puts "Данного вагона не сущесвует"
+    elsif wagon.type != type
+      puts "Неверно выбран тип вагона"
+    elsif train_wagons.include?(wagon)
+      puts "Данный вагон уже прицеплен"
+    elsif @speed == 0 && wagon.type == type 
+      @train_wagons << wagon
+      puts "Вагон прицеплен."
+    end
   end
 
-  def remove_wagon(wagon) 
-    train_wagons.delete(wagon) if @speed == 0 && train_wagons.include?(wagon)
+  def remove_wagon(wagon)
+    if !train_wagons.include?(wagon)
+      puts "Такой вагон не приценлен к поезду."
+    elsif @speed == 0 && train_wagons.include?(wagon)
+      train_wagons.delete(wagon)
+      puts "Вагон отцеплен."
+    end
   end
 
   def drive_forward
-    @route.route_stations[@current_station_index].send_train(self) if self.next_station
-    next_station.take_train(self)
-    @current_station_index += 1
+    if next_station == nil
+      puts "Станция #{current_station.name} конечная."
+    elsif self.next_station
+      @route.route_stations[@current_station_index].send_train(self)
+      next_station.take_train(self)
+      @current_station_index += 1
+      puts "Поезд помещен на станцию #{current_station.name}."
+    end
   end
 
   def drive_back
-    @route.route_stations[@current_station_index].send_train(self) if self.previous_station
-    previous_station.take_train(self)
-    @current_station_index -= 1
+    if previous_station == nil
+      puts "Станция #{current_station.name} начальная."
+    elsif self.previous_station
+      @route.route_stations[@current_station_index].send_train(self)
+      previous_station.take_train(self)
+      @current_station_index -= 1
+      puts "Поезд помещен на станцию #{current_station.name}."
+    end
   end
 
   def current_station

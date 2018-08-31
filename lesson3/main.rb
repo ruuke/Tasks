@@ -10,5 +10,5 @@ require_relative 'passenger_wagon'
 
 puts "Давай создадим железную дорогу."
 @rr = RailRoad.new
-@rr.seed
+#@rr.seed
 @rr.main_menu

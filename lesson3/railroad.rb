@@ -6,7 +6,7 @@ class RailRoad
     @wagons = []
     @stations = []
   end
-
+=begin
   def seed
     @st1 = Station.new("Ufa")
     @st2 = Station.new("Msk")
@@ -31,7 +31,7 @@ class RailRoad
     @wagons << CargoWagon.new
     @wagons << PassengerWagon.new
   end
-
+=end
   # Main menu
 
   def main_menu
@@ -259,9 +259,13 @@ class RailRoad
   def show_train_wagons
     index = 1
     @selected_train = select_train
-    @selected_train.train_wagons.each do |wagon|
-      puts "#{index}. #{wagon}"
-      index += 1
+    if @selected_train.train_wagons.length.zero?
+      puts "К поезду не прицеплены вагоны."
+    else
+      @selected_train.train_wagons.each do |wagon|
+        puts "#{index}. #{wagon}"
+        index += 1
+      end
     end    
   end
 
@@ -381,9 +385,13 @@ class RailRoad
 
   def show_routes
     index = 1
-    @routes.each do |current_route|
-      puts "#{index}. #{current_route.route_stations.first.name} - #{current_route.route_stations.last.name}"
-      index += 1
+    if @routes.length.zero?
+      puts "Список станций пуст."
+    else
+      @routes.each do |current_route|
+        puts "#{index}. #{current_route.route_stations.first.name} - #{current_route.route_stations.last.name}"
+        index += 1
+      end
     end
   end
 
