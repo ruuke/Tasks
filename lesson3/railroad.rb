@@ -314,9 +314,13 @@ class RailRoad
 
   def show_wagons
     index = 1
-    @wagons.each do |wagon|
-      puts "#{index}. #{wagon}"
-      index += 1
+    if @wagons.length.zero?
+      puts "Список пуст. Создайте вагон."
+    else
+      @wagons.each do |wagon|
+        puts "#{index}. #{wagon}"
+        index += 1
+      end
     end
   end
 

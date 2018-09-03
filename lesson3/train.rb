@@ -1,13 +1,24 @@
+require_relative 'maker_name'
+
 class Train
-  
+  @@all_trains = []
+  include MakerName
   attr_accessor :speed
-  attr_reader :type, :route, :train_wagons, :trains, :number
+  attr_reader :type, :route, :train_wagons, :number
+
+  def self.find(number)
+    @@all_trains.each do |train|
+      puts train if train.number == number
+    end
+  end
+
     
   def initialize(number, type)
     @number = number
     @type = type
     @speed = 0
     @train_wagons = []
+    @@all_trains << self
   end
 
   def stop

@@ -7,6 +7,7 @@ require_relative 'cargo_train'
 require_relative 'passenger_train'
 require_relative 'cargo_wagon'
 require_relative 'passenger_wagon'
+require_relative 'maker_name'
 
 puts "Давай создадим железную дорогу."
 @rr = RailRoad.new
