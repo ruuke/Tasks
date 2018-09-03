@@ -1,8 +1,10 @@
 require_relative 'maker_name'
+require_relative 'instance_counter'
 
 class Train
   @@all_trains = []
   include MakerName
+  include InstanceCounter
   attr_accessor :speed
   attr_reader :type, :route, :train_wagons, :number
 
@@ -19,6 +21,7 @@ class Train
     @speed = 0
     @train_wagons = []
     @@all_trains << self
+    register_instances
   end
 
   def stop
