@@ -2,16 +2,14 @@ require_relative 'brand_name'
 require_relative 'instance_counter'
 
 class Train
-  @@all_trains = []
+  @@all_trains = {}
   include BrandName
   include InstanceCounter
   attr_accessor :speed
   attr_reader :type, :route, :train_wagons, :number
 
   def self.find(number)
-    @@all_trains.each do |train|
-      train if train.number == number
-    end
+    @@all_trains[number]
   end
 
     
@@ -20,7 +18,7 @@ class Train
     @type = type
     @speed = 0
     @train_wagons = []
-    @@all_trains << self
+    @@all_trains[number] = self
     register_instances
   end
 
