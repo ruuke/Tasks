@@ -1,6 +1,6 @@
-require_relative 'maker_name'
+require_relative 'brand_name'
 class Wagon
-  include MakerName
+  include BrandName
   attr_reader :type
   def initialize(type)    
     @type = type

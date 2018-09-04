@@ -6,7 +6,7 @@ class Station
   attr_reader :trains, :name
 
   def self.all
-    @@all_stations.each {|station| puts station}
+    @@all_stations
   end
 
   def initialize(name)

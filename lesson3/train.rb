@@ -1,16 +1,16 @@
-require_relative 'maker_name'
+require_relative 'brand_name'
 require_relative 'instance_counter'
 
 class Train
   @@all_trains = []
-  include MakerName
+  include BrandName
   include InstanceCounter
   attr_accessor :speed
   attr_reader :type, :route, :train_wagons, :number
 
   def self.find(number)
     @@all_trains.each do |train|
-      puts train if train.number == number
+      train if train.number == number
     end
   end
 
