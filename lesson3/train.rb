@@ -2,16 +2,28 @@ require_relative 'brand_name'
 require_relative 'instance_counter'
 
 class Train
+  TRAIN_NUMBER = /[\w]{3}-?[\w]{2}/
   @@all_trains = {}
   include BrandName
   include InstanceCounter
-  attr_accessor :speed
-  attr_reader :type, :route, :train_wagons, :number
+  attr_accessor :speed, :number
+  attr_reader :type, :route, :train_wagons
 
   def self.find(number)
     @@all_trains[number]
   end
 
+  def validate!
+    raise 'Введите номер поезда' if number.empty?
+    raise "Неверный формат номера поезда:___-__" if number !~ TRAIN_NUMBER
+    true
+  end
+
+  def valid?
+    validate!
+  rescue
+    false
+  end
     
   def initialize(number, type)
     @number = number
@@ -20,6 +32,7 @@ class Train
     @train_wagons = []
     @@all_trains[number] = self
     register_instances
+    validate!
   end
 
   def stop
@@ -30,51 +43,28 @@ class Train
     @route = route #принимает объект класса Route (маршрут)
     route.route_stations.first.take_train(self) #помещает поезд на первую станцию маршрута
     @current_station_index = 0
-    puts "Поезд помещен на станцию #{current_station.name}"
   end
 
   def add_wagon(wagon)
-    if wagon == nil
-      puts "Данного вагона не сущесвует"
-    elsif wagon.type != type
-      puts "Неверно выбран тип вагона"
-    elsif train_wagons.include?(wagon)
-      puts "Данный вагон уже прицеплен"
-    elsif @speed == 0 && wagon.type == type 
-      @train_wagons << wagon
-      puts "Вагон прицеплен."
-    end
+    @train_wagons << wagon
   end
 
   def remove_wagon(wagon)
-    if !train_wagons.include?(wagon)
-      puts "Такой вагон не приценлен к поезду."
-    elsif @speed == 0 && train_wagons.include?(wagon)
-      train_wagons.delete(wagon)
-      puts "Вагон отцеплен."
-    end
+    train_wagons.delete(wagon)
   end
 
   def drive_forward
-    if next_station == nil
-      puts "Станция #{current_station.name} конечная."
-    elsif self.next_station
-      @route.route_stations[@current_station_index].send_train(self)
-      next_station.take_train(self)
-      @current_station_index += 1
-      puts "Поезд помещен на станцию #{current_station.name}."
-    end
+    self.next_station
+    @route.route_stations[@current_station_index].send_train(self)
+    next_station.take_train(self)
+    @current_station_index += 1
   end
 
   def drive_back
-    if previous_station == nil
-      puts "Станция #{current_station.name} начальная."
-    elsif self.previous_station
-      @route.route_stations[@current_station_index].send_train(self)
-      previous_station.take_train(self)
-      @current_station_index -= 1
-      puts "Поезд помещен на станцию #{current_station.name}."
-    end
+    self.previous_station
+    @route.route_stations[@current_station_index].send_train(self)
+    previous_station.take_train(self)
+    @current_station_index -= 1
   end
 
   def current_station

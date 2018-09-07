@@ -6,7 +6,7 @@ class RailRoad
     @wagons = []
     @stations = []
   end
-=begin
+
   def seed
     @st1 = Station.new("Ufa")
     @st2 = Station.new("Msk")
@@ -22,8 +22,8 @@ class RailRoad
     @r2.add_station(@st2)
     @routes << @r1
     @routes << @r2
-    @tr1 = CargoTrain.new(111)
-    @tr2 = PassengerTrain.new(222)
+    @tr1 = CargoTrain.new("111-11")
+    @tr2 = PassengerTrain.new('222-22')
     @trains_in_railroad << @tr1
     @trains_in_railroad << @tr2
     @wagons << CargoWagon.new
@@ -31,7 +31,7 @@ class RailRoad
     @wagons << CargoWagon.new
     @wagons << PassengerWagon.new
   end
-=end
+
   # Main menu
 
   def main_menu
@@ -94,8 +94,12 @@ class RailRoad
         return new_station
       end
     end
+    begin
       @stations << Station.new(station_name)
       puts "Станция #{station_name} создана"
+    rescue RuntimeError => e
+      puts e.inspect
+    end
   end
 
   def show_stations
@@ -186,29 +190,39 @@ class RailRoad
 
 
   def new_passenger_train
-    puts "Введите номер поезда"
-    train_number = gets.chomp.to_i
+    puts "Введите номер поезда в формате три цифры/буквы, необязательный пробел, две цифры/буквы."
+    train_number = gets.chomp.to_s
     @trains_in_railroad.each do |train|
       if train.number == train_number
         puts "Данный поезд уже существует"
         return new_passenger_train
       end
     end
-    @trains_in_railroad << PassengerTrain.new(train_number)
-    puts "Поезд номер #{train_number} создан"
+    begin
+      @trains_in_railroad << PassengerTrain.new(train_number)
+      puts "Поезд номер #{train_number} создан"
+    rescue RuntimeError => e
+      puts e.inspect
+      return new_passenger_train
+    end
   end
 
   def new_cargo_train
-    puts "Введите номер поезда"
-    train_number = gets.chomp
+    puts "Введите номер поезда в формате три цифры/буквы, необязательный пробел, две цифры/буквы."
+    train_number = gets.chomp.to_s
     @trains_in_railroad.each do |train|
       if train.number == train_number
         puts "Данный поезд уже существует"
         return new_cargo_train
       end
     end
-    @trains_in_railroad << CargoTrain.new(train_number)
-    puts "Поезд номер #{train_number} создан"
+    begin
+      @trains_in_railroad << CargoTrain.new(train_number)
+      puts "Поезд номер #{train_number} создан"
+    rescue RuntimeError =>  e
+      puts e.inspect
+      return new_cargo_train
+    end
   end
 
   def show_trains
@@ -238,22 +252,42 @@ class RailRoad
     selected_train = select_train
     selected_route = select_route
     selected_train.take_route(selected_route)
+    puts "Поезд помещен на станцию #{selected_route.route_stations.first.name}"
   end
 
   def train_drive_forward
     selected_train = select_train
+    if selected_train.next_station == nil
+      puts "Станция #{selected_train.current_station.name} конечная."
+      return trains_menu
+    end
     selected_train.drive_forward
+    puts "Поезд помещен на станцию #{selected_train.current_station.name}."
   end 
 
   def train_drive_back
     selected_train = select_train
+    if selected_train.previous_station == nil
+      puts "Станция #{selected_train.current_station.name} начальная."
+      return trains_menu
+    end
     selected_train.drive_back
+    puts "Поезд помещен на станцию #{selected_train.current_station.name}."
   end
 
   def add_wagon_to_train
     selected_train = select_train
     selected_wagon = select_wagon
-    selected_train.add_wagon(selected_wagon)
+    if selected_wagon == nil
+      puts "Данного вагона не сущесвует"
+    elsif selected_wagon.type != selected_train.type
+      puts "Неверно выбран тип вагона"
+    elsif selected_train.train_wagons.include?(selected_wagon)
+      puts "Данный вагон уже прицеплен"
+    elsif selected_train.speed == 0 && selected_wagon.type == selected_train.type 
+      selected_train.add_wagon(selected_wagon)
+      puts "Вагон прицеплен."
+    end
   end
 
   def show_train_wagons
@@ -272,7 +306,12 @@ class RailRoad
   def remove_wagon_from_train
     show_train_wagons
     deleted_wagon = select_wagon
-    @selected_train.remove_wagon(deleted_wagon)
+    if !@selected_train.train_wagons.include?(deleted_wagon)
+      puts "Такой вагон не приценлен к поезду."
+    elsif @selected_train.speed == 0 && @selected_train.train_wagons.include?(deleted_wagon)
+      @selected_train.remove_wagon(deleted_wagon)
+      puts "Вагон отцеплен."
+    end
   end
 
   # Wagons menu
@@ -367,7 +406,7 @@ class RailRoad
 
   def new_route
     if @stations.length >= 2
-      puts "Выберите первыю станцию маршрута."
+      puts "Выберите первую станцию маршрута."
       show_stations
       selected_first_station = gets.chomp.to_i
       first_station = @stations[selected_first_station - 1]
@@ -380,6 +419,7 @@ class RailRoad
       else
         second_station = @stations[selected_second_station - 1]
         @routes << Route.new(first_station, second_station)
+        puts "Маршрут создан."
       end
     else
       puts "Создайте станцию"
@@ -416,12 +456,25 @@ class RailRoad
 
   def add_station_to_route
     selected_station = select_station
+    selected_route = select_route
+    if selected_route.route_stations.include?(selected_station)
+      puts "Станция #{selected_station.name} есть в списке маршрута."
+      return routes_menu
+    end
     select_route.add_station(selected_station)
+    puts "Станция #{selected_station.name} добавлена в маршрут."
   end
 
   def delete_station_from_route
-    puts "Выберите маршрут, чтобы посмотреть список станций и укажите станцию для удаления."
     selected_station = select_station
-    select_route.remove_station(selected_station)
+    selected_route = select_route
+    if [selected_route.route_stations.first, selected_route.route_stations.last].include?(selected_station)
+      puts "Начальную и конечную станцию маршрута нельзя удалить."
+    elsif !selected_route.route_stations.include?(selected_station)
+      puts "Данной станции нет в списке маршрута."
+    else
+      selected_route.remove_station(selected_station)
+      puts "Станция #{selected_station.name} удалена из маршрута."
+    end
   end
 end
