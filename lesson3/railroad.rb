@@ -417,9 +417,14 @@ class RailRoad
         puts "Выберите станцию отличную от первой."
         return new_route
       else
-        second_station = @stations[selected_second_station - 1]
-        @routes << Route.new(first_station, second_station)
-        puts "Маршрут создан."
+        begin
+          second_station = @stations[selected_second_station - 1]
+          @routes << Route.new(first_station, second_station)
+          puts "Маршрут создан."
+        rescue RuntimeError => e
+          puts e.inspect
+          return routes_menu
+        end
       end
     else
       puts "Создайте станцию"
@@ -461,8 +466,13 @@ class RailRoad
       puts "Станция #{selected_station.name} есть в списке маршрута."
       return routes_menu
     end
-    select_route.add_station(selected_station)
-    puts "Станция #{selected_station.name} добавлена в маршрут."
+    begin
+      select_route.add_station(selected_station)
+      puts "Станция #{selected_station.name} добавлена в маршрут."
+    rescue RuntimeError => e 
+      puts e.inspect
+      return routes_menu
+    end
   end
 
   def delete_station_from_route
@@ -473,8 +483,13 @@ class RailRoad
     elsif !selected_route.route_stations.include?(selected_station)
       puts "Данной станции нет в списке маршрута."
     else
-      selected_route.remove_station(selected_station)
-      puts "Станция #{selected_station.name} удалена из маршрута."
+      begin
+        selected_route.remove_station(selected_station)
+        puts "Станция #{selected_station.name} удалена из маршрута."
+      rescue RuntimeError => e 
+        puts e.inspect
+        return routes_menu
+      end
     end
   end
 end
