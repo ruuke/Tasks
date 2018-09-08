@@ -21,7 +21,7 @@ class Route
   end
 
   def validate!
-    raise 'Станция не соответствует типу данных.' if !@route_stations.each {|station| station.is_a?(Station)}
+    raise 'Станция не соответствует типу данных.' if !@route_stations.all? {|station| station.is_a?(Station)}
     true
   end
 
