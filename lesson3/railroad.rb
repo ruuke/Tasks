@@ -342,6 +342,7 @@ class RailRoad
       puts "Выберите пункт меню"
       puts "1. Создать вагон"
       puts "2. Показать список вагонов."
+      puts "3. Занять место/объем в вагоне."
       puts "0. Выйти из меню."
       select_input = gets.chomp
       break if select_input == "0"
@@ -349,7 +350,9 @@ class RailRoad
       when "1"
         new_wagon
       when "2"
-        show_wagons      
+        show_wagons  
+      when "3"
+        wagons_manipulations
       else
         puts "Выберите значение из списка"
         wagons_menu
@@ -391,7 +394,7 @@ class RailRoad
   end
 
   def select_wagon
-    puts "Выберите вагон соответсвующий типу поезда"
+    puts "Выберите вагон."
     show_wagons
     selected_wagon = gets.chomp.to_i
     if selected_wagon < 1 || selected_wagon > @wagons.length
@@ -399,6 +402,35 @@ class RailRoad
     end
     @wagons[selected_wagon - 1]
   end
+
+  def wagons_manipulations
+    begin
+      @selected_wagon = select_wagon
+      case @selected_wagon.type
+      when :cargo
+        take_volume
+      when :passenger
+        take_a_seat
+      end
+    rescue Exception => e 
+      puts e.inspect
+      puts "Выберите значение из списка вагонов"
+      return wagons_menu
+    end
+  end
+
+  def take_volume
+    puts "Введите занимаемый объем."
+    taken_volume = gets.chomp.to_i
+    @selected_wagon.take_volume(taken_volume)
+    puts "Занято - #{@selected_wagon.taken_volume}, свободно - #{@selected_wagon.free_volume}"
+  end
+
+  def take_a_seat
+    @selected_wagon.take_a_seat
+    puts "Занято мест - #{@selected_wagon.taken_seats}, свободно мест - #{@selected_wagon.free_seats}"
+  end
+
 
   # Routes menu
 
