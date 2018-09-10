@@ -3,3 +3,5 @@ class PassengerTrain < Train
     super
   end
 end
+
+  

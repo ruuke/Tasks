@@ -26,10 +26,10 @@ class RailRoad
     @tr2 = PassengerTrain.new('222-22')
     @trains_in_railroad << @tr1
     @trains_in_railroad << @tr2
-    @wagons << CargoWagon.new
-    @wagons << PassengerWagon.new
-    @wagons << CargoWagon.new
-    @wagons << PassengerWagon.new
+    @wagons << CargoWagon.new(100)
+    @wagons << PassengerWagon.new(20)
+    @wagons << CargoWagon.new(200)
+    @wagons << PassengerWagon.new(40)
   end
 
   # Main menu
@@ -125,10 +125,17 @@ class RailRoad
   end
 
   def show_trains_in_stations
-    index = 1
-    @stations.each do |station|
-      puts "#{index}. #{station.name} - #{station.trains}"
-      index += 1
+    # index = 1
+    # @stations.each do |station|
+    #   puts "#{index}. #{station.name} - #{station.trains}"
+    #   index += 1
+    selected_station = select_station
+    if selected_station.trains.length == 0
+      puts "На станции нет поездов"
+    else
+      Station.do_smthng_with_stations(selected_station) do |train|
+        puts "№ #{train.number}, тип - #{train.type}, кол-во вагонов - #{train.train_wagons.length}"
+      end
     end
   end
 
@@ -291,14 +298,28 @@ class RailRoad
   end
 
   def show_train_wagons
+    # index = 1
+    # @selected_train = select_train
+    # if @selected_train.train_wagons.length.zero?
+    #   puts "К поезду не прицеплены вагоны."
+    # else
+    #   @selected_train.train_wagons.each do |wagon|
+    #     puts "#{index}. #{wagon}"
+    #     index += 1
+    #   end
     index = 1
     @selected_train = select_train
     if @selected_train.train_wagons.length.zero?
       puts "К поезду не прицеплены вагоны."
-    else
-      @selected_train.train_wagons.each do |wagon|
-        puts "#{index}. #{wagon}"
+    elsif @selected_train.type == :cargo
+      Train.do_smthng_with_train_wagons(@selected_train.number) do |wagon|
+        puts "#{index}. тип - #{wagon.type}, свободный объем - #{wagon.free_volume}, занятый объем - #{wagon.taken_volume}"
         index += 1
+      end
+    elsif @selected_train.type == :passenger
+      Train.do_smthng_with_train_wagons(@selected_train.number) do |wagon|
+        puts "#{index}. тип - #{wagon.type}, свободных мест - #{wagon.free_seats}, занятых мест- #{wagon.taken_seats}"
+        index +=1
       end
     end    
   end
@@ -342,9 +363,15 @@ class RailRoad
     puts "2.Грузовой."
     selected_wagon_type = gets.chomp.to_i
     if selected_wagon_type == 1
-      @wagons << PassengerWagon.new
+      puts "Введите количесво пассажирских мест."
+      total_seats = gets.chomp.to_i
+      @wagons << PassengerWagon.new(total_seats)
+      puts "Вагон создан"
     elsif selected_wagon_type == 2
-      @wagons << CargoWagon.new
+      puts "Введите объем вагона."
+      total_volume = gets.chomp.to_i 
+      @wagons << CargoWagon.new(total_volume)
+      puts "Вагон создан"
     else
       puts "Выберите предложенные варианты"
       return new_wagon

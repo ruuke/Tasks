@@ -11,6 +11,10 @@ class Station
     @@all_stations
   end
 
+  def self.do_smthng_with_stations(station, &block)
+    station.trains.each &block
+  end
+
   def validate!
     raise "Введите название станции." if name.empty?
     raise "Введите название станции in English." if name !~ LETTERS
@@ -42,4 +46,5 @@ class Station
   rescue
     false
   end
+
 end

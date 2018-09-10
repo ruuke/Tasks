@@ -13,6 +13,10 @@ class Train
     @@all_trains[number]
   end
 
+  def self.do_smthng_with_train_wagons(number, &block)
+    find(number).train_wagons.each &block
+  end
+
   def validate!
     raise 'Введите номер поезда' if number.empty?
     raise "Неверный формат номера поезда:___-__" if number !~ TRAIN_NUMBER
@@ -30,9 +34,9 @@ class Train
     @type = type
     @speed = 0
     @train_wagons = []
-    @@all_trains[number] = self
-    register_instances
     validate!
+    @@all_trains[number] = self
+    register_instances    
   end
 
   def stop
