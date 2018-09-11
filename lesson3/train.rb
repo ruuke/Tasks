@@ -13,8 +13,8 @@ class Train
     @@all_trains[number]
   end
 
-  def self.do_smthng_with_train_wagons(number, &block)
-    find(number).train_wagons.each &block
+  def each_train(&block)
+    train_wagons.each &block
   end
 
   def validate!

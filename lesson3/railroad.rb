@@ -133,7 +133,7 @@ class RailRoad
     if selected_station.trains.length == 0
       puts "На станции нет поездов"
     else
-      Station.do_smthng_with_stations(selected_station) do |train|
+      selected_station.each_station do |train|
         puts "№ #{train.number}, тип - #{train.type}, кол-во вагонов - #{train.train_wagons.length}"
       end
     end
@@ -312,12 +312,12 @@ class RailRoad
     if @selected_train.train_wagons.length.zero?
       puts "К поезду не прицеплены вагоны."
     elsif @selected_train.type == :cargo
-      Train.do_smthng_with_train_wagons(@selected_train.number) do |wagon|
+      @selected_train.each_train do |wagon|
         puts "#{index}. тип - #{wagon.type}, свободный объем - #{wagon.free_volume}, занятый объем - #{wagon.taken_volume}"
         index += 1
       end
     elsif @selected_train.type == :passenger
-      Train.do_smthng_with_train_wagons(@selected_train.number) do |wagon|
+      @selected_train.each_train do |wagon|
         puts "#{index}. тип - #{wagon.type}, свободных мест - #{wagon.free_seats}, занятых мест- #{wagon.taken_seats}"
         index +=1
       end

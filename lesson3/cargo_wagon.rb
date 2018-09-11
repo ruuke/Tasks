@@ -1,5 +1,5 @@
 class CargoWagon < Wagon
-	attr_reader :taken_volume, :free_volume
+  attr_reader :taken_volume, :free_volume
   def initialize(type = :cargo, total_volume)
     super
     @total_volume = total_volume
@@ -8,7 +8,7 @@ class CargoWagon < Wagon
   end
 
   def take_volume(volume)
-  	@taken_volume += volume if @free_volume >= volume
-  	@free_volume -= volume if @free_volume >= volume
+    @taken_volume += volume if @free_volume >= volume
+    @free_volume -= volume if @free_volume >= volume
   end
 end

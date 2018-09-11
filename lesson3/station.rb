@@ -11,8 +11,8 @@ class Station
     @@all_stations
   end
 
-  def self.do_smthng_with_stations(station, &block)
-    station.trains.each &block
+  def each_station(&block)
+    trains.each &block
   end
 
   def validate!
