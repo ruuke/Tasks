@@ -1,6 +1,7 @@
 class RailRoad
   attr_reader :stations, :routes, :trains_in_railroad, :wagons
-  def initialize    
+
+  def initialize
     @routes = []
     @trains_in_railroad = []
     @wagons = []
@@ -33,7 +34,6 @@ class RailRoad
   end
 
   # Main menu
-
   def main_menu
     loop do
       puts "Выберите пункт меню"
@@ -61,7 +61,6 @@ class RailRoad
   end
 
   # Stations menu
-
   def stations_menu
     loop do
       puts "Выберите пункт меню"
@@ -125,10 +124,6 @@ class RailRoad
   end
 
   def show_trains_in_stations
-    # index = 1
-    # @stations.each do |station|
-    #   puts "#{index}. #{station.name} - #{station.trains}"
-    #   index += 1
     selected_station = select_station
     if selected_station.trains.length == 0
       puts "На станции нет поездов"
@@ -140,7 +135,6 @@ class RailRoad
   end
 
   # Trains menu
-
   def trains_menu
     loop do
       puts "Выберите пункт меню"
@@ -298,15 +292,6 @@ class RailRoad
   end
 
   def show_train_wagons
-    # index = 1
-    # @selected_train = select_train
-    # if @selected_train.train_wagons.length.zero?
-    #   puts "К поезду не прицеплены вагоны."
-    # else
-    #   @selected_train.train_wagons.each do |wagon|
-    #     puts "#{index}. #{wagon}"
-    #     index += 1
-    #   end
     index = 1
     @selected_train = select_train
     if @selected_train.train_wagons.length.zero?
@@ -336,7 +321,6 @@ class RailRoad
   end
 
   # Wagons menu
-
   def wagons_menu
     loop do
       puts "Выберите пункт меню"
@@ -433,7 +417,6 @@ class RailRoad
 
 
   # Routes menu
-
   def routes_menu
     loop do
       puts "Выберите пункт меню"

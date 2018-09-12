@@ -1,8 +1,16 @@
 require_relative 'instance_counter'
 
-class Route 
+class Route
   include InstanceCounter
-  attr_reader :route_stations, :name
+
+  ERROR = 'Станция не соответствует типу данных.'
+
+  attr_reader :route_stations
+
+  def validate!
+    raise ERROR unless @route_stations.all? { |station| station.is_a?(Station) }
+    true
+  end
 
   def initialize(first_station, last_station)
     @route_stations = [first_station, last_station]
@@ -16,13 +24,8 @@ class Route
   end
 
   def remove_station(station)
-     @route_stations.delete(station)
-     validate!
-  end
-
-  def validate!
-    raise 'Станция не соответствует типу данных.' unless @route_stations.all? {|station| station.is_a?(Station)}
-    true
+    @route_stations.delete(station)
+    validate!
   end
 
   def valid?
