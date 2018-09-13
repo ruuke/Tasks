@@ -42,11 +42,11 @@ class Train
   end
 
   def add_wagon(wagon)
-    @train_wagons << wagon
+    @train_wagons << wagon if speed == 0
   end
 
   def remove_wagon(wagon)
-    train_wagons.delete(wagon)
+    train_wagons.delete(wagon) if speed == 0
   end
 
   def drive_forward

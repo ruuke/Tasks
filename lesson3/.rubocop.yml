@@ -1,0 +1,16 @@
+Style/StringLiterals:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/ClassLength:
+  Max: 100
+  Exclude:
+    - 'railroad.rb'
+
+Metrics/MethodLength:
+  Max: 35
+
+Metrics/LineLength:
+  Max: 130

@@ -44,6 +44,7 @@ class RailRoad
       puts "0. Выйти из программы."
       select_input = gets.chomp
       break if select_input == "0"
+
       case select_input
       when "1"
         stations_menu
@@ -70,6 +71,7 @@ class RailRoad
       puts "0. Выйти из меню."
       select_input = gets.chomp
       break if select_input == "0"
+
       case select_input
       when "1"
         new_station
@@ -87,9 +89,9 @@ class RailRoad
   def new_station
     puts "Введите название станции"
     station_name = gets.capitalize.chomp
-    @stations.each do |station| 
+    @stations.each do |station|
       if station.name == station_name
-        puts "Данная станция уже существует." 
+        puts "Данная станция уже существует."
         return new_station
       end
     end
@@ -107,25 +109,24 @@ class RailRoad
       new_station
     end
     index = 1
-    @stations.each do |station| 
+    @stations.each do |station|
       puts "#{index}. #{station.name}"
-      index +=1
+      index += 1
     end
   end
 
   def select_station
-    puts "Выберите станцию из списка и введите ее номер" unless @stations.length.zero?
+    puts "Выберите станцию из списка и введите ее номер"
     show_stations
     selected_station = gets.chomp.to_i
-    if selected_station < 1 || selected_station > @stations.length
-      return select_station
-    end
-      @stations[selected_station - 1]
+    return select_station if selected_station < 1 || selected_station > @stations.length
+
+    @stations[selected_station - 1]
   end
 
   def show_trains_in_stations
     selected_station = select_station
-    if selected_station.trains.length == 0
+    if selected_station.trains.length.zero?
       puts "На станции нет поездов"
     else
       selected_station.each_station do |train|
@@ -149,6 +150,7 @@ class RailRoad
       puts "0. Выйти из меню."
       select_input = gets.chomp
       break if select_input == "0"
+
       case select_input
       when "1"
         new_train
@@ -179,7 +181,7 @@ class RailRoad
     puts "2. Грузовой поезд"
     train_type = gets.chomp
     case train_type
-    when "1" 
+    when "1"
       new_passenger_train
     when "2"
       new_cargo_train
@@ -188,7 +190,6 @@ class RailRoad
       new_train
     end
   end
-
 
   def new_passenger_train
     puts "Введите номер поезда в формате три цифры/буквы, необязательный пробел, две цифры/буквы."
@@ -220,7 +221,7 @@ class RailRoad
     begin
       @trains_in_railroad << CargoTrain.new(train_number)
       puts "Поезд номер #{train_number} создан"
-    rescue RuntimeError =>  e
+    rescue RuntimeError => e
       puts e.inspect
       return new_cargo_train
     end
@@ -258,17 +259,17 @@ class RailRoad
 
   def train_drive_forward
     selected_train = select_train
-    if selected_train.next_station == nil
+    if selected_train.next_station.nil?
       puts "Станция #{selected_train.current_station.name} конечная."
       return trains_menu
     end
     selected_train.drive_forward
     puts "Поезд помещен на станцию #{selected_train.current_station.name}."
-  end 
+  end
 
   def train_drive_back
     selected_train = select_train
-    if selected_train.previous_station == nil
+    if selected_train.previous_station.nil?
       puts "Станция #{selected_train.current_station.name} начальная."
       return trains_menu
     end
@@ -279,13 +280,13 @@ class RailRoad
   def add_wagon_to_train
     selected_train = select_train
     selected_wagon = select_wagon
-    if selected_wagon == nil
+    if selected_wagon.nil?
       puts "Данного вагона не сущесвует"
     elsif selected_wagon.type != selected_train.type
       puts "Неверно выбран тип вагона"
     elsif selected_train.train_wagons.include?(selected_wagon)
       puts "Данный вагон уже прицеплен"
-    elsif selected_train.speed == 0 && selected_wagon.type == selected_train.type 
+    elsif selected_wagon.type == selected_train.type
       selected_train.add_wagon(selected_wagon)
       puts "Вагон прицеплен."
     end
@@ -304,9 +305,9 @@ class RailRoad
     elsif @selected_train.type == :passenger
       @selected_train.each_train do |wagon|
         puts "#{index}. тип - #{wagon.type}, свободных мест - #{wagon.free_seats}, занятых мест- #{wagon.taken_seats}"
-        index +=1
+        index += 1
       end
-    end    
+    end
   end
 
   def remove_wagon_from_train
@@ -314,7 +315,7 @@ class RailRoad
     deleted_wagon = select_wagon
     if !@selected_train.train_wagons.include?(deleted_wagon)
       puts "Такой вагон не приценлен к поезду."
-    elsif @selected_train.speed == 0 && @selected_train.train_wagons.include?(deleted_wagon)
+    elsif @selected_train.train_wagons.include?(deleted_wagon)
       @selected_train.remove_wagon(deleted_wagon)
       puts "Вагон отцеплен."
     end
@@ -330,11 +331,12 @@ class RailRoad
       puts "0. Выйти из меню."
       select_input = gets.chomp
       break if select_input == "0"
+
       case select_input
       when "1"
         new_wagon
       when "2"
-        show_wagons  
+        show_wagons
       when "3"
         wagons_manipulations
       else
@@ -356,7 +358,7 @@ class RailRoad
       puts "Вагон создан"
     elsif selected_wagon_type == 2
       puts "Введите объем вагона."
-      total_volume = gets.chomp.to_i 
+      total_volume = gets.chomp.to_i
       @wagons << CargoWagon.new(total_volume)
       puts "Вагон создан"
     else
@@ -383,24 +385,23 @@ class RailRoad
     selected_wagon = gets.chomp.to_i
     if selected_wagon < 1 || selected_wagon > @wagons.length
       puts "Выберите из предложенных вариантов"
+      return select_wagon
     end
     @wagons[selected_wagon - 1]
   end
 
   def wagons_manipulations
-    begin
-      @selected_wagon = select_wagon
-      case @selected_wagon.type
-      when :cargo
-        take_volume
-      when :passenger
-        take_a_seat
-      end
-    rescue Exception => e 
-      puts e.inspect
-      puts "Выберите значение из списка вагонов"
-      return wagons_menu
+    @selected_wagon = select_wagon
+    case @selected_wagon.type
+    when :cargo
+      take_volume
+    when :passenger
+      take_a_seat
     end
+  rescue StandardError => e
+    puts e.inspect
+    puts "Выберите значение из списка вагонов"
+    return wagons_menu
   end
 
   def take_volume
@@ -415,7 +416,6 @@ class RailRoad
     puts "Занято мест - #{@selected_wagon.taken_seats}, свободно мест - #{@selected_wagon.free_seats}"
   end
 
-
   # Routes menu
   def routes_menu
     loop do
@@ -428,6 +428,7 @@ class RailRoad
       puts "0. Выйти из меню."
       select_input = gets.chomp
       break if select_input == "0"
+
       case select_input
       when "1"
         new_route
@@ -487,14 +488,16 @@ class RailRoad
   end
 
   def show_stations_in_route
-    select_route.route_stations.each_with_index{|station, i| puts "#{i + 1} #{station.name}"}
+    select_route.route_stations.each_with_index do |station, i|
+      puts "#{i + 1} #{station.name}"
+    end
   end
 
   def select_route
     puts "Выберите маршрут"
     show_routes
     @selected_route = gets.chomp.to_i
-    if @selected_route <1 || @selected_route > @routes.length
+    if @selected_route < 1 || @selected_route > @routes.length
       puts "Выберите из предложенных вариантов"
       return select_route
     end
@@ -511,7 +514,7 @@ class RailRoad
     begin
       select_route.add_station(selected_station)
       puts "Станция #{selected_station.name} добавлена в маршрут."
-    rescue RuntimeError => e 
+    rescue RuntimeError => e
       puts e.inspect
       return routes_menu
     end
@@ -528,7 +531,7 @@ class RailRoad
       begin
         selected_route.remove_station(selected_station)
         puts "Станция #{selected_station.name} удалена из маршрута."
-      rescue RuntimeError => e 
+      rescue RuntimeError => e
         puts e.inspect
         return routes_menu
       end
