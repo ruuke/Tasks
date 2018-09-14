@@ -11,6 +11,7 @@ class Train
   def validate!
     raise 'Введите номер поезда' if number.empty?
     raise "Неверный формат номера поезда:___-__" if number !~ TRAIN_NUMBER
+
     true
   end
 
@@ -28,7 +29,7 @@ class Train
     @train_wagons = []
     validate!
     @@all_trains[number] = self
-    register_instances  
+    register_instances
   end
 
   def stop
@@ -42,11 +43,11 @@ class Train
   end
 
   def add_wagon(wagon)
-    @train_wagons << wagon if speed == 0
+    @train_wagons << wagon if speed.zero?
   end
 
   def remove_wagon(wagon)
-    train_wagons.delete(wagon) if speed == 0
+    train_wagons.delete(wagon) if speed.zero?
   end
 
   def drive_forward
@@ -68,7 +69,7 @@ class Train
   end
 
   def next_station
-    route.route_stations[@current_station_index + 1] unless @route.route_stations[@current_station_index + 1] = nil
+    route.route_stations[@current_station_index + 1] unless @route.route_stations[@current_station_index + 1].nil?
   end
 
   def previous_station
@@ -81,7 +82,7 @@ class Train
 
   def valid?
     validate!
-  rescue
+  rescue StandardError
     false
   end
 end

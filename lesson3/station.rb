@@ -12,6 +12,7 @@ class Station
   def validate!
     raise "Введите название станции." if name.empty?
     raise "Введите название станции in English." if name !~ LETTERS
+
     true
   end
 
@@ -32,7 +33,7 @@ class Station
   end
 
   def trains_type(type = :all)
-    @train.select{ |train| train.type == type }
+    @train.select { |train| train.type == type }
   end
 
   def send_train(train)
@@ -45,7 +46,7 @@ class Station
 
   def valid?
     validate!
-  rescue
+  rescue StandardError
     false
   end
 end

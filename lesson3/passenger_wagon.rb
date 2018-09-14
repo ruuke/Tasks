@@ -1,8 +1,8 @@
 class PassengerWagon < Wagon
   attr_reader :taken_seats, :free_seats
-  
-  def initialize(type = :passenger, total_number_of_seats)
-    super
+
+  def initialize(total_number_of_seats, type = :passenger)
+    @type = type
     @total_number_of_seats = total_number_of_seats
     @taken_seats = 0
     @free_seats = @total_number_of_seats - @taken_seats

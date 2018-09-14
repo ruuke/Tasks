@@ -3,12 +3,13 @@ require_relative 'instance_counter'
 class Route
   include InstanceCounter
 
-  ERROR = 'Станция не соответствует типу данных.'
+  ERROR = 'Станция не соответствует типу данных.'.freeze
 
   attr_reader :route_stations
 
   def validate!
     raise ERROR unless @route_stations.all? { |station| station.is_a?(Station) }
+
     true
   end
 
@@ -30,7 +31,7 @@ class Route
 
   def valid?
     validate!
-  rescue
+  rescue StandardError
     false
   end
 end
