@@ -1,26 +1,27 @@
 require_relative 'brand_name'
 require_relative 'instance_counter'
+require_relative 'validation'
+require_relative 'accessors'
 
 class Train
   include BrandName
   include InstanceCounter
+  include Validation
+  include Accessors
 
   TRAIN_NUMBER = /[\w]{3}-?[\w]{2}/
   @@all_trains = {}
 
-  def validate!
-    raise 'Введите номер поезда' if number.empty?
-    raise "Неверный формат номера поезда:___-__" if number !~ TRAIN_NUMBER
-
-    true
-  end
-
-  attr_accessor :speed, :number
-  attr_reader :type, :route, :train_wagons
+  attr_accessors_with_history :speed
+  strong_attr_accessor :speed, Integer
+  attr_reader :type, :route, :train_wagons, :number
 
   def self.find(number)
     @@all_trains[number]
   end
+
+  validate :number, :presence
+  validate :number, :format, TRAIN_NUMBER
 
   def initialize(number, type)
     @number = number
@@ -38,6 +39,7 @@ class Train
 
   def take_route(route)
     @route = route
+    validate!
     route.route_stations.first.take_train(self)
     @current_station_index = 0
   end
@@ -77,12 +79,6 @@ class Train
   end
 
   def each_train(&block)
-    train_wagons.each &block
-  end
-
-  def valid?
-    validate!
-  rescue StandardError
-    false
+    train_wagons.each(&block)
   end
 end

@@ -401,7 +401,7 @@ class RailRoad
   rescue StandardError => e
     puts e.inspect
     puts "Выберите значение из списка вагонов"
-    return wagons_menu
+    wagons_menu
   end
 
   def take_volume

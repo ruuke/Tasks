@@ -41,7 +41,7 @@ class Station
   end
 
   def each_station(&block)
-    trains.each &block
+    trains.each(&block)
   end
 
   def valid?

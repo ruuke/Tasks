@@ -1,23 +1,19 @@
 require_relative 'instance_counter'
+require_relative 'validation'
 
 class Route
   include InstanceCounter
-
-  ERROR = 'Станция не соответствует типу данных.'.freeze
+  include Validation
 
   attr_reader :route_stations
-
-  def validate!
-    raise ERROR unless @route_stations.all? { |station| station.is_a?(Station) }
-
-    true
-  end
 
   def initialize(first_station, last_station)
     @route_stations = [first_station, last_station]
     validate!
     register_instances
   end
+
+  validate :route_stations, :type, Station
 
   def add_station(station)
     @route_stations.insert(-2, station)
@@ -27,11 +23,5 @@ class Route
   def remove_station(station)
     @route_stations.delete(station)
     validate!
-  end
-
-  def valid?
-    validate!
-  rescue StandardError
-    false
   end
 end
