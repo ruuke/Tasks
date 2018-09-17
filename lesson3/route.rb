@@ -7,13 +7,13 @@ class Route
 
   attr_reader :route_stations
 
+  validate :route_stations, :type, Station
+
   def initialize(first_station, last_station)
     @route_stations = [first_station, last_station]
     validate!
     register_instances
   end
-
-  validate :route_stations, :type, Station
 
   def add_station(station)
     @route_stations.insert(-2, station)

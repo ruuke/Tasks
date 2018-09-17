@@ -5,9 +5,11 @@ module Validation
   end
 
   module ClassMethods
+    attr_accessor :validations
+
     def validate(name, type, *params)
-      validations = []
-      validations << {attr: name, type: type, params: params}
+      @validations ||= []
+      @validations << {attr: name, type: type, params: params}
     end
   end
 
@@ -37,10 +39,10 @@ module Validation
       value = instance_variable_get("@#{attr}")
       if value.is_a? Array
         value.each do |i|
-          raise "#{i} не является элементом #{class_name}" unless i.is_a?(class_name)
+          raise "#{i} не является элементом #{class_name}" unless i.is_a? class_name
         end
       else
-        raise "#{attr} не является элементом #{class_name}" unless value.is_a?(class_name)
+        raise "#{attr} не является элементом #{class_name}" unless value.is_a? class_name
       end
     end
 
